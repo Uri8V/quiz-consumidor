@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consumer Protection and Insider Trading Quiz</title>
+<style>
+:root{--bg:#f4f7fb;--card:#ffffff;--text:#1b2433;--muted:#5b6678;--border:#d5dce8;--navy:#14315c;--blue:#1f5fae;--blue-soft:#e8f0fb;--warn:#b42318;--ok:#067647}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.wrap{max-width:720px;margin:0 auto;padding:20px 14px 60px}
+header.site{background:var(--navy);color:#fff;padding:14px 16px;text-align:center;font-weight:700;letter-spacing:.2px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:0 4px 18px rgba(20,49,92,.07);margin-top:18px}
+h1{font-size:24px;margin:0 0 10px;color:var(--navy)}
+h2{font-size:20px;line-height:1.4;margin:6px 0 14px;color:var(--text)}
+p{line-height:1.55;margin:8px 0}
+.muted{color:var(--muted);font-size:14px}
+.info{background:var(--blue-soft);border:1px solid #c5d8f3;border-radius:10px;padding:12px 14px;margin:14px 0;font-size:15px;line-height:1.6}
+label{font-weight:700;display:block;margin:16px 0 6px}
+input[type=text],textarea{width:100%;padding:13px;border:1.5px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;color:var(--text);background:#fff;-webkit-user-select:text;user-select:text}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--blue)}
+textarea{min-height:200px;resize:vertical}
+textarea[readonly]{background:#eef1f6}
+button{font-family:inherit}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:15px 20px;background:var(--navy);color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-top:18px}
+.btn:hover{background:var(--blue)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.secondary{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.badge{font-size:14px;font-weight:700;color:var(--navy);background:var(--blue-soft);border-radius:999px;padding:7px 12px}
+.timer{font-size:22px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+.timer.low{color:var(--warn)}
+.progress{height:9px;background:#e3e8f1;border-radius:999px;overflow:hidden;margin:6px 0 18px}
+.progress>div{height:100%;width:0;background:var(--blue);transition:width .25s}
+.tbar{height:5px;background:#e3e8f1;border-radius:999px;overflow:hidden;margin-bottom:16px}
+.tbar>div{height:100%;width:100%;background:var(--navy)}
+.choice{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:15px;margin:10px 0;border:1.5px solid var(--border);background:#fff;color:var(--text);border-radius:10px;font-size:16px;line-height:1.45;cursor:pointer}
+.choice:hover,.choice:focus{border-color:var(--blue);background:var(--blue-soft);outline:none}
+.choice .L{font-weight:800;color:var(--navy);min-width:20px}
+.hidden{display:none!important}
+.status{border-radius:10px;padding:12px 14px;margin:14px 0;font-size:15px;line-height:1.5}
+.status.ok{background:#e7f6ee;border:1px solid #a6dcc0;color:var(--ok)}
+.status.bad{background:#fdecea;border:1px solid #f4b6b0;color:var(--warn)}
+.status.wait{background:#fff7e0;border:1px solid #f1d98a;color:#7a5b00}
+.score{font-size:30px;font-weight:800;color:var(--navy);margin:10px 0}
+#overlay{position:fixed;inset:0;background:rgba(10,20,40,.78);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+#overlay .box{background:#fff;border-radius:14px;padding:24px;max-width:420px;text-align:center;border-top:6px solid var(--warn)}
+#overlay h3{margin:0 0 8px;color:var(--warn);font-size:20px}
+@media print{body *{display:none!important}body:before{content:"Printing is disabled for this quiz.";display:block;font-size:20px;padding:30px}}
+</style>
+</head>
+<body>
+<header class="site">Online Quiz</header>
+<div class="wrap">
+
+  <!-- START -->
+  <div class="card" id="start">
+    <h1>Consumer Protection and Insider Trading Quiz</h1>
+    <p class="muted">20 multiple-choice questions + 1 essay question &middot; 25 points total</p>
+    <div class="info">
+      <b>Multiple choice:</b> 20 points. You have <b>20 seconds</b> per question. If time runs out, the question is marked incorrect and the quiz moves on.<br>
+      <b>Essay:</b> 5 points. You have <b>3 minutes</b>. The quiz is submitted automatically when time runs out.<br>
+      You <b>cannot go back</b> to a previous question. Leaving this tab or window is recorded and warned.
+    </div>
+    <label for="studentName">Student Name</label>
+    <input type="text" id="studentName" placeholder="Enter your full name" autocomplete="off" maxlength="100">
+    <div id="startMsg" class="status bad hidden"></div>
+    <button class="btn" id="startBtn">Start Quiz</button>
+  </div>
+
+  <!-- LOCKED -->
+  <div class="card hidden" id="locked">
+    <h1>Quiz Locked</h1>
+    <p>An attempt for this quiz has already been started or submitted on this device, so it cannot be taken again.</p>
+    <p class="muted">If you believe this is a mistake, please tell your instructor.</p>
+  </div>
+
+  <!-- MULTIPLE CHOICE -->
+  <div class="card hidden" id="quiz">
+    <div class="top"><span class="badge" id="counter">Question 1 of 20</span><span class="timer" id="timer">0:20</span></div>
+    <div class="progress"><div id="bar"></div></div>
+    <div class="tbar"><div id="tbar"></div></div>
+    <h2 id="question"></h2>
+    <div id="choices"></div>
+  </div>
+
+  <!-- ESSAY -->
+  <div class="card hidden" id="essay">
+    <div class="top"><span class="badge">Essay Question &middot; 5 points</span><span class="timer" id="essayTimer">3:00</span></div>
+    <p class="muted" style="margin-top:0">Time Remaining</p>
+    <h2>What have you learned from this topic about consumer protection, and how can you apply what you learned in your everyday life as a consumer? Explain your answer in your own words and give at least one example.</h2>
+    <textarea id="essayAnswer" placeholder="Type your answer here..." spellcheck="false" autocomplete="off"></textarea>
+    <button class="btn" id="submitBtn">Submit Quiz</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="card hidden" id="result">
+    <h1>Quiz Submitted</h1>
+    <p id="resName"></p>
+    <div class="score" id="resScore"></div>
+    <p><b>Essay:</b> Submitted <span class="muted">(graded manually by your instructor)</span></p>
+    <div class="status wait" id="resStatus">Saving your submission...</div>
+    <button class="btn secondary hidden" id="retryBtn">Try sending again</button>
+    <button class="btn secondary hidden" id="copyBtn">Copy my submission details</button>
+    <p class="muted">Your total score will be available after your instructor grades the essay.</p>
+  </div>
+</div>
+
+<!-- TAB SWITCH WARNING -->
+<div id="overlay" class="hidden">
+  <div class="box">
+    <h3>Warning: You left the quiz</h3>
+    <p id="overlayText"></p>
+    <p class="muted">The timer did not stop while you were away. This has been recorded.</p>
+    <button class="btn" id="overlayBtn">Return to Quiz</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNdG4HqlCovF-U8uqWjkfxNnMETg14CLhaM8uocIin2d9vsOyTAivb3c3YY-bLkjj6/exec";
+var LOCK_KEY = "cpit_quiz_attempt_v1";
+var MC_SECONDS = 20, ESSAY_SECONDS = 180, MC_TOTAL = 20, ESSAY_MAX = 5, OVERALL = 25;
+
+// Questions in the order given. Answer key is stored encoded (not shown anywhere on the page).
+var QUESTIONS = [
+ ["What is adulteration?",["Improving the appearance of a product","Adding or removing substances in a way that makes a product unsafe or impure","Increasing the price of a product","Changing the product’s packaging"]],
+ ["What is the main problem involved in consumer fraud?",["Products being sold at low prices","Businesses giving discounts","Consumers being deceived or misled","Consumers comparing products"]],
+ ["Which is an example of false advertising?",["Showing the actual price of a product","Providing complete product information","Stating the ingredients correctly","Claiming that a product has a benefit that it does not actually provide"]],
+ ["What is deceptive packaging?",["Packaging designed to make a product appear larger or different from what it actually contains","Packaging that protects the product","Packaging with complete information","Packaging made from recyclable materials"]],
+ ["What does misbranding refer to?",["Giving a product a new design","Selling a product at a lower price","Using false, misleading, or incomplete labeling on a product","Changing the size of a product"]],
+ ["What is insider trading?",["Buying products from another business","Trading securities based on important non-public information","Selling products through social media","Comparing stock prices publicly"]],
+ ["Why is it important for businesses to provide safe and truthful products?",["To protect consumers and build trust","To increase product packaging","To make products more expensive","To reduce competition"]],
+ ["Why should advertising and packaging information not mislead consumers?",["To make advertisements longer","To make packaging more colorful","To help consumers make informed purchasing decisions","To increase the number of advertisements"]],
+ ["What is one important role of government agencies in consumer protection?",["To create advertisements for businesses","To protect consumers from unsafe products and unfair business practices","To increase the profits of businesses","To choose which products consumers should buy"]],
+ ["Which situation best represents good governance in consumer protection?",["Ignoring consumer complaints","Allowing businesses to provide false information","Giving special treatment to selected businesses","Enforcing rules fairly and protecting the rights of consumers"]],
+ ["Which information helps consumers know when a product should no longer be used?",["Brand name","Expiration date","Product color","Advertising slogan"]],
+ ["Why should consumers compare prices before buying a product?",["To make the product more expensive","To avoid reading product labels","To make a more informed purchasing decision","To increase the seller’s profit"]],
+ ["Which information shows the amount or quantity of product inside a package?",["Net weight or quantity","Brand slogan","Product color","Store name"]],
+ ["Which Philippine government agency handles many consumer protection concerns involving products, trade practices, prices, labeling, and warranties?",["Department of Health","Securities and Exchange Commission","Department of Trade and Industry","Department of Education"]],
+ ["Which Philippine government agency regulates health products such as food, drugs, cosmetics, and medical devices within its mandate?",["Department of Trade and Industry","Food and Drug Administration","Securities and Exchange Commission","Department of Labor and Employment"]],
+ ["What is one role of the Securities and Exchange Commission in consumer/investor protection?",["Checking food expiration dates","Approving restaurant menus","Setting prices for all consumer products","Protecting investors against fraudulent or manipulative practices"]],
+ ["What is one important responsibility of a business toward consumers?",["Provide safe products and truthful information","Hide product information","Use misleading advertisements","Increase prices without informing consumers"]],
+ ["What should a business do when it discovers that one of its products may be unsafe?",["Continue selling it without warning","Hide the problem from consumers","Recall the product when necessary","Change the product’s name"]],
+ ["Which action shows informed purchasing behavior?",["Buying a product without checking anything","Reading labels, comparing prices, and checking expiration dates","Choosing the most expensive product automatically","Buying only based on advertisements"]],
+ ["Which principle represents responsible business behavior?",["Profit is more important than consumer safety","Businesses should avoid giving consumers information","Businesses should focus only on increasing sales","Profit should not come at the expense of consumer safety and honesty"]]
+];
+var KEY = atob("QkNEQUNCQUNCREJDQUNCREFDQkQ=");
+
+function $(id){return document.getElementById(id);}
+function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function show(id){["start","locked","quiz","essay","result"].forEach(function(x){$(x).classList.toggle("hidden",x!==id);});window.scrollTo(0,0);}
+function store(get,val){try{if(get)return localStorage.getItem(LOCK_KEY);localStorage.setItem(LOCK_KEY,val);}catch(e){return null;}}
+
+var state = {idx:0, score:0, answered:[], inProgress:false, finished:false, submitted:false,
+             switches:0, lastLeave:0, mcTimer:null, essayTimer:null, answerLock:false,
+             attemptId:"", payload:null, sending:false};
+
+// ---------- start ----------
+if(store(true)){ show("locked"); }
+
+$("startBtn").onclick=function(){
+  var name=$("studentName").value.trim().replace(/\s+/g," ");
+  if(name.length<2){var m=$("startMsg");m.textContent="Please enter your name before starting.";m.classList.remove("hidden");return;}
+  if(store(true)){show("locked");return;}
+  store(false,String(Date.now()));
+  state.attemptId="A"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  state.name=name;
+  state.inProgress=true;
+  state.idx=0;state.score=0;
+  show("quiz");
+  showQuestion();
+};
+
+// ---------- multiple choice ----------
+function showQuestion(){
+  state.answerLock=false;
+  var q=QUESTIONS[state.idx];
+  $("counter").textContent="Question "+(state.idx+1)+" of "+QUESTIONS.length;
+  $("bar").style.width=(state.idx/QUESTIONS.length*100)+"%";
+  $("question").textContent=q[0];
+  var box=$("choices");box.innerHTML="";
+  q[1].forEach(function(text,i){
+    var b=document.createElement("button");
+    b.type="button";b.className="choice";
+    var l=document.createElement("span");l.className="L";l.textContent=String.fromCharCode(65+i)+".";
+    var t=document.createElement("span");t.textContent=text;
+    b.appendChild(l);b.appendChild(t);
+    b.onclick=function(){answer(i);};
+    box.appendChild(b);
+  });
+  startMcTimer();
+}
+function startMcTimer(){
+  clearInterval(state.mcTimer);
+  var end=Date.now()+MC_SECONDS*1000;
+  function tick(){
+    var left=Math.ceil((end-Date.now())/1000);
+    $("timer").textContent=fmt(left);
+    $("timer").classList.toggle("low",left<=5);
+    $("tbar").style.width=Math.max(0,(end-Date.now())/(MC_SECONDS*10))+"%";
+    if(left<=0){clearInterval(state.mcTimer);answer(-1);}
+  }
+  tick();
+  state.mcTimer=setInterval(tick,200);
+}
+function answer(choice){
+  if(state.answerLock||!state.inProgress)return;
+  state.answerLock=true;
+  clearInterval(state.mcTimer);
+  var correct=(choice>=0 && String.fromCharCode(65+choice)===KEY.charAt(state.idx));
+  if(correct)state.score++;
+  state.answered.push(choice);
+  state.idx++;
+  if(state.idx<QUESTIONS.length){showQuestion();}else{startEssay();}
+}
+
+// ---------- essay ----------
+function startEssay(){
+  $("bar").style.width="100%";
+  show("essay");
+  var ta=$("essayAnswer");ta.focus();
+  var end=Date.now()+ESSAY_SECONDS*1000;
+  function tick(){
+    var left=Math.ceil((end-Date.now())/1000);
+    $("essayTimer").textContent=fmt(left);
+    $("essayTimer").classList.toggle("low",left<=30);
+    if(left<=0){clearInterval(state.essayTimer);ta.readOnly=true;submitQuiz();}
+  }
+  tick();
+  state.essayTimer=setInterval(tick,200);
+}
+$("submitBtn").onclick=function(){
+  if(!window.confirm("Submit your quiz now? You cannot change your answers after this."))return;
+  submitQuiz();
+};
+
+// ---------- submit ----------
+function submitQuiz(){
+  if(state.submitted)return;
+  state.submitted=true;
+  state.finished=true;
+  state.inProgress=false;
+  clearInterval(state.essayTimer);clearInterval(state.mcTimer);
+  var ta=$("essayAnswer");ta.readOnly=true;
+  $("submitBtn").disabled=true;
+  $("overlay").classList.add("hidden");
+
+  state.payload={
+    timestamp:new Date().toISOString(),
+    attemptId:state.attemptId,
+    studentName:state.name,
+    mcScore:state.score,
+    mcTotal:MC_TOTAL,
+    essayAnswer:ta.value,
+    essayScore:"",
+    totalScore:"",
+    percentage:"",
+    userAgent:navigator.userAgent,
+    tabSwitches:state.switches
+  };
+  $("resName").textContent="Student: "+state.name;
+  $("resScore").textContent="Multiple Choice Score: "+state.score+"/"+MC_TOTAL;
+  show("result");
+  send();
+}
+function setStatus(cls,msg){var s=$("resStatus");s.className="status "+cls;s.textContent=msg;}
+function send(){
+  if(state.sending)return;
+  state.sending=true;
+  $("retryBtn").classList.add("hidden");$("copyBtn").classList.add("hidden");
+  setStatus("wait","Saving your submission... please keep this page open.");
+  var ctl=("AbortController" in window)?new AbortController():null;
+  var to=setTimeout(function(){if(ctl)ctl.abort();},25000);
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(state.payload),
+    redirect:"follow",
+    signal:ctl?ctl.signal:undefined
+  }).then(function(r){return r.text();}).then(function(t){
+    clearTimeout(to);
+    var j;try{j=JSON.parse(t);}catch(e){j=null;}
+    if(j&&j.status==="success"){
+      setStatus("ok","Your submission was recorded successfully. You may now close this page.");
+    }else{
+      fail((j&&j.message)?("The server reported a problem: "+j.message):"The server did not confirm your submission.");
+    }
+  }).catch(function(){
+    clearTimeout(to);
+    fail("Your submission could not be confirmed (connection problem).");
+  });
+}
+function fail(msg){
+  state.sending=false;
+  setStatus("bad",msg+" It has NOT been confirmed as recorded. Check your internet connection and press “Try sending again”. Do not close this page. If it keeps failing, tell your instructor.");
+  $("retryBtn").classList.remove("hidden");
+  $("copyBtn").classList.remove("hidden");
+}
+$("retryBtn").onclick=send; // Apps Script ignores repeats of the same attempt ID, so retrying is safe.
+$("copyBtn").onclick=function(){
+  var p=state.payload;
+  var txt="Quiz submission (not confirmed)\nName: "+p.studentName+"\nMC Score: "+p.mcScore+"/"+p.mcTotal+"\nTab switches: "+p.tabSwitches+"\nTime: "+p.timestamp+"\nEssay:\n"+p.essayAnswer;
+  try{navigator.clipboard.writeText(txt).then(function(){$("copyBtn").textContent="Copied";});}catch(e){}
+};
+
+// ---------- tab / window leave detection ----------
+function onLeave(){
+  if(!state.inProgress||state.finished)return;
+  var now=Date.now();
+  if(now-state.lastLeave<1500)return;
+  state.lastLeave=now;
+  state.switches++;
+  $("overlayText").textContent="You left the quiz page "+state.switches+" time"+(state.switches>1?"s":"")+". Switching tabs or windows during the quiz is not allowed.";
+  $("overlay").classList.remove("hidden");
+}
+document.addEventListener("visibilitychange",function(){if(document.hidden)onLeave();});
+window.addEventListener("blur",onLeave);
+$("overlayBtn").onclick=function(){$("overlay").classList.add("hidden");};
+
+window.addEventListener("beforeunload",function(e){
+  if(state.inProgress&&!state.finished){e.preventDefault();e.returnValue="";return "";}
+});
+
+// ---------- discourage copying ----------
+function editable(t){return t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA");}
+document.addEventListener("contextmenu",function(e){e.preventDefault();});
+document.addEventListener("selectstart",function(e){if(!editable(e.target))e.preventDefault();});
+document.addEventListener("dragstart",function(e){e.preventDefault();});
+["copy","cut","paste"].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();});});
+document.addEventListener("keydown",function(e){
+  var k=(e.key||"").toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&["c","v","x","p","s","u"].indexOf(k)!==-1){e.preventDefault();e.stopPropagation();}
+  if(e.key==="F12"){e.preventDefault();}
+},true);
+
+})();
+</script>
+</body>
+</html>
