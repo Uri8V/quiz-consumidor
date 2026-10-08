@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consumer Protection and Insider Trading Quiz</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f4f6f8,#11151a);--card:light-dark(#fff,#1a2027);--text:light-dark(#17202a,#f1f5f9);--muted:light-dark(#667085,#aab4c0);--border:light-dark(#d9dee5,#303945);--accent:light-dark(#183b63,#78aef0);}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;user-select:none;-webkit-user-select:none}
+#app{min-height:100vh;padding:24px 16px} .wrap{max-width:720px;margin:auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:0 8px 30px #0001}
+h1{font-size:25px;margin:0 0 8px} h2{font-size:21px;line-height:1.35} p{line-height:1.5}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:13px}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:20px}
+#timer{font-weight:700;font-size:18px} .progress{height:8px;background:var(--border);border-radius:20px;overflow:hidden;margin:12px 0 22px}
+#bar{height:100%;width:0;background:var(--accent);transition:width .2s}
+.choice{display:block;width:100%;text-align:left;padding:15px;margin:10px 0;border:1px solid var(--border);background:transparent;color:var(--text);border-radius:12px;font-size:16px;cursor:pointer}
+.choice:hover{border-color:var(--accent)} .choice.selected{border:2px solid var(--accent)}
+button{border:0;border-radius:12px;padding:13px 20px;background:var(--accent);color:white;font-weight:700;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+.nav{display:flex;justify-content:flex-end;margin-top:20px}
+input,textarea{width:100%;padding:13px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-size:16px}
+textarea{min-height:180px;resize:vertical;user-select:text;-webkit-user-select:text}
+.notice{padding:12px;border:1px solid var(--border);border-radius:12px;margin:16px 0;color:var(--muted);font-size:14px}
+.hidden{display:none} .score{font-size:28px;font-weight:800}
+</style>
+</head>
+<body>
+<div id="app"><div class="wrap">
+<div class="card" id="start">
+<h1>Consumer Protection and Insider Trading Quiz</h1>
+<p>20 multiple-choice questions + 1 essay question.</p>
+<div class="notice"><b>Multiple choice:</b> 20 seconds per question.<br><b>Essay:</b> 3 minutes. Total essay = 5 points.</div>
+<label>Student Name</label>
+<input id="studentName" placeholder="Enter your name" autocomplete="off">
+<div class="nav"><button id="startBtn">Start Quiz</button></div>
+</div>
+
+<div class="card hidden" id="quiz">
+<div class="top"><span class="badge" id="counter"></span><span id="timer">00:20</span></div>
+<div class="progress"><div id="bar"></div></div>
+<h2 id="question"></h2>
+<div id="choices"></div>
+<div class="nav"><button id="next" disabled>Next</button></div>
+</div>
+
+<div class="card hidden" id="essay">
+<div class="top"><span class="badge">Essay • 5 points</span><span id="essayTimer">03:00</span></div>
+<h2>What have you learned from this topic about consumer protection, and how can you apply what you learned in your everyday life as a consumer?</h2>
+<p>Explain your answer in your own words and give at least one example.</p>
+<textarea id="essayAnswer" placeholder="Write your answer here..."></textarea>
+<div class="nav"><button id="submitBtn">Submit Quiz</button></div>
+</div>
+
+<div class="card hidden" id="result">
+<h1>Quiz Submitted</h1>
+<p id="studentResult"></p>
+<p class="score" id="score"></p>
+<p id="essayResult"></p>
+<div class="notice">Your essay is worth 5 points and should be graded by the instructor.</div>
+</div>
+</div></div>
+
+<script>
+const scriptURL="https://script.google.com/macros/s/AKfycbwNdG4HqlCovF-U8uqWjkfxNnMETg14CLhaM8uocIin2d9vsOyTAivb3c3YY-bLkjj6/exec";
+const questions = [{"q": "What is adulteration?", "a": ["Giving false information in advertisements", "Making a product contaminated, diluted, substituted, inferior, or unsafe", "Using nonpublic information when trading securities", "Creating misleading packaging"], "correct": 1}, {"q": "What is the main problem involved in fraud?", "a": ["Poor product quality", "Incorrect product labeling", "Intentional deception for someone else’s benefit", "High product prices"], "correct": 2}, {"q": "Which situation is an example of false advertising?", "a": ["A product is contaminated before being sold", "A package uses a misleading design", "A business provides accurate information about its product", "A company makes false or unsupported claims about its product"], "correct": 3}, {"q": "What is deceptive packaging?", "a": ["Packaging that creates a misleading impression about the product", "Packaging that protects the product from contamination", "Packaging that provides accurate product information", "Packaging that makes the product easier to transport"], "correct": 0}, {"q": "What is misbranding?", "a": ["Trading stocks using public information", "Making a product unsafe", "Providing false or misleading information on a product label", "Making an unsupported advertisement"], "correct": 2}, {"q": "Which action is considered insider trading?", "a": ["Buying a product after seeing an advertisement", "Using material nonpublic information when trading securities", "Comparing prices between two products", "Reading information on a product label"], "correct": 1}, {"q": "Why should businesses provide safe and truthful products?", "a": ["To protect consumers and follow their responsibilities", "To make advertisements more attractive", "To increase misleading product claims", "To avoid providing product information"], "correct": 0}, {"q": "Why should advertising and packaging not intentionally mislead consumers?", "a": ["Because consumers should always buy expensive products", "Because businesses cannot advertise their products", "Because misleading information can harm consumers and violate consumer protection principles", "Because packaging is more important than product quality"], "correct": 2}, {"q": "What is one important role of government agencies in consumer protection?", "a": ["Creating misleading advertisements", "Enforcing consumer protection laws", "Encouraging businesses to hide product information", "Allowing unsafe products to be sold"], "correct": 1}, {"q": "How can good governance help consumers and businesses?", "a": ["By promoting secrecy and unfair practices", "By allowing businesses to provide incomplete information", "By reducing accountability in business practices", "By promoting transparency, accountability, fairness, and consumer welfare"], "correct": 3}, {"q": "What should consumers check before buying a product to know when it should no longer be used?", "a": ["Product color", "Expiration date", "Advertisement design", "Brand logo"], "correct": 1}, {"q": "Why is it important to compare prices before buying a product?", "a": ["To make the product more expensive", "To avoid reading the product label", "To help make an informed purchasing decision", "To choose the product with the biggest packaging"], "correct": 2}, {"q": "What should consumers check to know how much product is actually inside the package?", "a": ["Net weight or quantity", "Company logo", "Advertisement slogan", "Package color"], "correct": 0}, {"q": "Which government agency handles many consumer protection concerns involving products, trade practices, prices, labeling, and warranties in the Philippines?", "a": ["SEC", "FDA", "DTI", "DOH"], "correct": 2}, {"q": "Which government agency regulates health products such as food, drugs, cosmetics, and medical devices within its mandate?", "a": ["DTI", "FDA", "SEC", "BSP"], "correct": 1}, {"q": "What is one important role of the SEC in consumer and investor protection?", "a": ["Regulating food expiration dates", "Checking the net weight of products", "Approving cosmetic ingredients", "Protecting investors against fraudulent and manipulative practices"], "correct": 3}, {"q": "Which of the following is a responsibility of businesses toward consumers?", "a": ["Provide safe products and truthful information", "Hide product defects from consumers", "Use misleading advertisements", "Ignore consumer complaints"], "correct": 0}, {"q": "What should a business do when it discovers that one of its products is unsafe?", "a": ["Continue selling it without warning", "Hide the problem from consumers", "Recall the unsafe product when necessary", "Change the product’s advertisement only"], "correct": 2}, {"q": "Which action shows that a consumer is making an informed purchasing decision?", "a": ["Buying a product only because of its attractive packaging", "Reading labels, comparing prices, and checking expiration dates", "Buying the most expensive product automatically", "Ignoring product instructions"], "correct": 1}, {"q": "What is the key principle of responsible business practice in consumer protection?", "a": ["Profit should always come first", "Businesses should avoid government regulations", "Consumer complaints should be ignored", "Profit should not come at the expense of consumer safety and honesty"], "correct": 3}];
+let order = [...questions.keys()];
+let idx=0, selected=null, mcScore=0, timerId=null, essayTimerId=null, essaySeconds=180;
+const $=id=>document.getElementById(id);
+
+function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+$('startBtn').onclick=()=>{
+  if(!$('studentName').value.trim()){alert('Please enter your name.');return;}
+  shuffle(order); idx=0; $('start').classList.add('hidden'); $('quiz').classList.remove('hidden'); showQuestion();
+};
+
+function showQuestion(){
+  selected=null; $('next').disabled=true;
+  const item=questions[order[idx]];
+  $('counter').textContent=`Question ${idx+1} of ${questions.length}`;
+  $('bar').style.width=((idx)/questions.length*100)+'%';
+  $('question').textContent=item.q; $('choices').innerHTML='';
+  item.a.forEach((x,i)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=String.fromCharCode(65+i)+'. '+x;
+    b.onclick=()=>{document.querySelectorAll('.choice').forEach(z=>z.classList.remove('selected'));b.classList.add('selected');selected=i;$('next').disabled=false};
+    $('choices').appendChild(b);
+  });
+  startMCTimer();
+}
+function startMCTimer(){
+  clearInterval(timerId); let sec=20; $('timer').textContent='00:20';
+  timerId=setInterval(()=>{sec--; $('timer').textContent=formatTime(sec); if(sec<=0){clearInterval(timerId);goNext();}},1000);
+}
+$('next').onclick=goNext;
+function goNext(){
+  clearInterval(timerId);
+  if(selected!==null && selected===questions[order[idx]].correct)mcScore++;
+  idx++;
+  if(idx<questions.length)showQuestion(); else startEssay();
+}
+function startEssay(){
+  $('quiz').classList.add('hidden'); $('essay').classList.remove('hidden');
+  essaySeconds=180; $('essayTimer').textContent=formatTime(essaySeconds);
+  essayTimerId=setInterval(()=>{essaySeconds--; $('essayTimer').textContent=formatTime(essaySeconds); if(essaySeconds<=0){clearInterval(essayTimerId);submit();}},1000);
+}
+$('submitBtn').onclick=submit;
+
+let submitted = false;
+async function submit(){
+  if (submitted) return;
+  submitted = true;
+  clearInterval(essayTimerId);
+
+  const payload = {
+    name: $('studentName').value.trim(),
+    mcScore: mcScore,
+    essay: $('essayAnswer').value.trim()
+  };
+
+  $('essay').classList.add('hidden'); $('result').classList.remove('hidden');
+  $('studentResult').textContent='Student: '+payload.name;
+  $('score').textContent='Multiple Choice: '+mcScore+' / 20';
+  $('essayResult').textContent='Enviando respuestas...';
+
+  try {
+    const res = await fetch(scriptURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      keepalive: true
+    });
+    const out = await res.json();
+    if (!out.ok) throw new Error('El servidor respondió con error');
+    $('essayResult').textContent='Essay: 5 points (teacher grading required) ✔ Enviado';
+  } catch (err) {
+    console.error(err);
+    $('essayResult').textContent='⚠ No se pudieron enviar las respuestas. Avisá a tu profesor y no cierres esta página.';
+  }
+}
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('copy',e=>{ if(!e.target.matches('textarea')) e.preventDefault(); });
+document.addEventListener('cut',e=>{ if(!e.target.matches('textarea')) e.preventDefault(); });
+document.addEventListener('paste',e=>{ if(!e.target.matches('input,textarea')) e.preventDefault(); });
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&['c','x','v','p','s','u'].includes(e.key.toLowerCase())) e.preventDefault();
+  if(e.key==='PrintScreen'){alert('Screenshots are not permitted during the quiz.');}
+});
+window.addEventListener('beforeprint',e=>e.preventDefault());
+</script>
+</body>
+</html>
